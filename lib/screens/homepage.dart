@@ -5,6 +5,7 @@ import 'package:notesave/widgets/note_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
+  static const routeName = '/';
 
   final String title;
 
@@ -32,12 +33,6 @@ class _HomePageState extends State<HomePage> {
     final noteService = NotesService();
     final response = await noteService.postNote(note);
     print('post response: ${response.data}');
-  }
-
-  void deleteNote(int id) async {
-    final noteService = NotesService();
-    final response = await noteService.deleteNote(id);
-    print('delete response: ${response.data}');
   }
 
   void updateNote() async {
