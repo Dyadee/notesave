@@ -5,6 +5,7 @@ import 'package:notesave/widgets/note_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
+  static const routeName = '/';
 
   final String title;
 
@@ -24,20 +25,6 @@ class _HomePageState extends State<HomePage> {
       });
     }
     print('get response: ${response.data}');
-  }
-
-  void addNote() async {
-    Note note =
-        const Note(title: 'Second Note', description: 'Second Description');
-    final noteService = NotesService();
-    final response = await noteService.postNote(note);
-    print('post response: ${response.data}');
-  }
-
-  void deleteNote(int id) async {
-    final noteService = NotesService();
-    final response = await noteService.deleteNote(id);
-    print('delete response: ${response.data}');
   }
 
   void updateNote() async {
@@ -69,26 +56,10 @@ class _HomePageState extends State<HomePage> {
         children: [
           FloatingActionButton(
             onPressed: () {
-              deleteNote(2);
+              Navigator.pushNamed(context, '/add_note');
             },
-            tooltip: 'Delete Note',
-            child: const Icon(Icons.remove),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          FloatingActionButton(
-            onPressed: addNote,
             tooltip: 'Add Note',
             child: const Icon(Icons.add),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          FloatingActionButton(
-            onPressed: updateNote,
-            tooltip: 'Update Note',
-            child: const Icon(Icons.refresh),
           ),
         ],
       ),

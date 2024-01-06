@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notesave/models/note.dart';
+import 'package:notesave/screens/edit_note_screen.dart';
+import 'package:notesave/screens/single_note_screen.dart';
 
 class NoteWidget extends StatelessWidget {
   final Note note;
@@ -14,6 +16,10 @@ class NoteWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListTile(
+            onTap: () {
+              Navigator.pushNamed(context, SingleNoteScreen.routeName,
+                  arguments: note);
+            },
             leading: const Icon(Icons.note),
             title: Text(note.title!,
                 style: const TextStyle(
@@ -28,7 +34,8 @@ class NoteWidget extends StatelessWidget {
             trailing: IconButton(
               icon: const Icon(Icons.edit),
               onPressed: () {
-                print('edit note ${note.id} pressed');
+                Navigator.pushNamed(context, EditNoteScreen.routeName,
+                    arguments: note);
               },
             )),
       ),
