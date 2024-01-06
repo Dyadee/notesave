@@ -27,14 +27,6 @@ class _HomePageState extends State<HomePage> {
     print('get response: ${response.data}');
   }
 
-  void addNote() async {
-    Note note =
-        const Note(title: 'Second Note', description: 'Second Description');
-    final noteService = NotesService();
-    final response = await noteService.postNote(note);
-    print('post response: ${response.data}');
-  }
-
   void updateNote() async {
     Note note = const Note(
         title: 'Updated Note', description: 'Updated Description', id: 3);

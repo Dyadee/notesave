@@ -10,8 +10,8 @@ class SingleNoteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     void deleteNote(int id) async {
       final noteService = NotesService();
-      await noteService.deleteNote(id).then((value) =>
-          Navigator.pushReplacementNamed(context, '/', arguments: value));
+      await noteService.deleteNote(id).then((apiresponse) =>
+          Navigator.pushReplacementNamed(context, '/', arguments: apiresponse));
     }
 
     final note = ModalRoute.of(context)!.settings.arguments as Note;
