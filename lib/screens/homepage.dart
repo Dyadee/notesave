@@ -29,7 +29,9 @@ class _HomePageState extends State<HomePage> {
       ),
       body:
           BlocBuilder<NotesListBloc, NotesListState>(builder: (context, state) {
-        if (state is NotesListLoadedState || state is NotesListAddState) {
+        if (state is NotesListLoadedState ||
+            state is NotesListAddState ||
+            state is NotesListUpdateState) {
           notes = state.notesList;
           return ListView(
             children: [

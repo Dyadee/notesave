@@ -71,36 +71,23 @@ class NoteFormState extends State<NoteForm> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
-              // onPressed: () async {
-              //   if (_formKey.currentState!.validate()) {
-              //     final noteService = NotesService();
-              //     if (widget.note != null) {
-              //       Note newNote = Note(
-              //           title: noteTitle.text,
-              //           description: noteDescription.text,
-              //           id: widget.note!.id!);
-              //       await noteService.patchNote(newNote).then((apiresponse) =>
-              //           Navigator.pushReplacementNamed(context, '/',
-              //               arguments: apiresponse));
-              //     } else {
-              //       Note note = Note(
-              //           title: noteTitle.text,
-              //           description: noteDescription.text);
-              //       await noteService.postNote(note).then((apiresponse) =>
-              //           Navigator.pushReplacementNamed(context, '/',
-              //               arguments: apiresponse));
-              //       context.read<NotesListBloc>().add(NotesListAddEvent(note));
-              //     }
-              //   }
-              // },
               onPressed: () {
-                Note note = Note(
-                    title: noteTitle.text, description: noteDescription.text);
-                context.read<NotesListBloc>().add(NotesListAddEvent(note));
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/',
-                );
+                if (_formKey.currentState!.validate()) {
+                  Note note = Note(
+                      title: noteTitle.text, description: noteDescription.text);
+                  if (widget.note != null) {
+                    Note noteToUpdate = note.copyWith(id: widget.note!.id!);
+                    context
+                        .read<NotesListBloc>()
+                        .add(NotesListUpdateEvent(noteToUpdate));
+                  } else {
+                    context.read<NotesListBloc>().add(NotesListAddEvent(note));
+                  }
+                  Navigator.pushReplacementNamed(
+                    context,
+                    '/',
+                  );
+                }
               },
               child: const Text('Save'),
             ),

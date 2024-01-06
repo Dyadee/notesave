@@ -12,6 +12,12 @@ class NotesListAddEvent extends NotesListEvent {
   NotesListAddEvent(this.note);
 }
 
-class NotesListDeleteEvent extends NotesListEvent {}
+class NotesListUpdateEvent extends NotesListEvent {
+  Note note;
+  NotesListUpdateEvent(this.note);
+}
 
-class NotesListUpdateEvent extends NotesListEvent {}
+class NotesListDeleteEvent extends NotesListEvent {
+  Note note;
+  NotesListDeleteEvent(this.note);
+}
