@@ -13,8 +13,20 @@ class NotesListBloc extends Bloc<NotesListEvent, NotesListState> {
       try {
         ApiResponse response = await _notesService.getAllNotesList();
         if (response.data is List<Note>) {
-          print('response.data NotesListGetAllEvent: ${response.data}');
           emit.call(NotesListLoadedState(response.data));
+        } else {
+          emit.call(NotesListErrorState(response.data.toString()));
+        }
+      } catch (e) {
+        emit.call(NotesListErrorState(e.toString()));
+      }
+    });
+
+    on<NotesListAddEvent>((event, emit) async {
+      try {
+        ApiResponse response = await _notesService.postNote(event.note);
+        if (response.data is List<Note>) {
+          emit.call(NotesListAddState(response.data));
         } else {
           emit.call(NotesListErrorState(response.data.toString()));
         }
