@@ -40,10 +40,10 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         } else {
-          return Container(
-            color: Colors.amber.shade300,
-            width: double.infinity,
-            height: double.infinity,
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.amber,
+            ),
           );
         }
       }),
