@@ -4,36 +4,58 @@ import 'dart:io';
 import 'package:notesave/constants/constants.dart';
 import 'package:notesave/models/note.dart';
 import 'package:http/http.dart' as http;
+import 'package:notesave/response_model/api_response.dart';
 
 class NotesService {
-  // Future<List<Note>> getAllNotesList() async {
-  Future<List<Note>> getAllNotesList() async {
+  Future<ApiResponse> getAllNotesList() async {
+    var apiResponse = ApiResponse<dynamic>(null);
     Uri url = Uri.parse('${Constants.BaseURL}/${Constants.BaseEndpoint}');
     try {
       final response =
           await http.get(url, headers: {"Content-Type": "application/json"});
-
-      // switch (response.statusCode) {
-      //   case 200:
-      //     apiResponse.responseData = List<Car>.from(
-      //         json.decode(response.body)['cars'].map((i) => Car.fromJson(i)));
-
-      //     break;
-      //   case 401:
-      //     apiResponse.responseData =
-      //         ApiError.fromJson(json.decode(response.body));
-      //     break;
-      //   default:
-      //     apiResponse.responseData =
-      //         ApiError.fromJson(json.decode(response.body));
-      //     break;
-      // }
-      print('${response.statusCode}: ${response.body}');
-      // return Note.fromJson(json) jsonDecode(response.body);
+      switch (response.statusCode) {
+        case 200:
+          apiResponse.responseData = List<Note>.from(
+              json.decode(response.body).map((i) => Note.fromJson(i)));
+          break;
+        case 401:
+          apiResponse.responseData = json.decode(response.body);
+          break;
+        default:
+          apiResponse.responseData = json.decode(response.body);
+          break;
+      }
     } on SocketException {
-      // apiResponse.responseData = ApiError(error: "Server error. Please retry");
+      apiResponse.responseData = "Server error. Please retry";
     }
-    // return apiResponse;
-    return [];
+    return apiResponse;
+  }
+
+  Future<ApiResponse> postNote(Note note) async {
+    var apiResponse = ApiResponse<dynamic>(null);
+    Uri url = Uri.parse('${Constants.BaseURL}/${Constants.BaseEndpoint}');
+
+    try {
+      var body = json.encode(note);
+      final response = await http.post(url,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: body);
+      switch (response.statusCode) {
+        case 200:
+          apiResponse.responseData = Note.fromJson(json.decode(response.body));
+          break;
+        case 401:
+          apiResponse.responseData = json.decode(response.body);
+          break;
+        default:
+          apiResponse.responseData = json.decode(response.body);
+          break;
+      }
+    } on SocketException {
+      apiResponse.responseData = "Server error. Please retry";
+    }
+    return apiResponse;
   }
 }
