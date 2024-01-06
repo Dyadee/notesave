@@ -58,4 +58,32 @@ class NotesService {
     }
     return apiResponse;
   }
+
+  Future<ApiResponse> deleteNote(int id) async {
+    var apiResponse = ApiResponse<dynamic>(null);
+    Uri url = Uri.parse('${Constants.BaseURL}/${Constants.BaseEndpoint}/$id');
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      switch (response.statusCode) {
+        case 200:
+          apiResponse.responseData = Note.fromJson(json.decode(response.body));
+          break;
+        case 401:
+          apiResponse.responseData = json.decode(response.body);
+          break;
+        default:
+          apiResponse.responseData = json.decode(response.body);
+          break;
+      }
+    } on SocketException {
+      apiResponse.responseData = "Server error. Please retry";
+    }
+    return apiResponse;
+  }
 }

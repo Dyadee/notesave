@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   void getAllNotes() async {
     final noteService = NotesService();
     final response = await noteService.getAllNotesList();
-    print('response: ${response.responseData}');
+    print('get response: ${response.responseData}');
   }
 
   void addNote() async {
@@ -25,7 +25,13 @@ class _HomePageState extends State<HomePage> {
         const Note(title: 'Second Note', description: 'Second Description');
     final noteService = NotesService();
     final response = await noteService.postNote(note);
-    print('response: ${response.responseData}');
+    print('post response: ${response.responseData}');
+  }
+
+  void deleteNote(int id) async {
+    final noteService = NotesService();
+    final response = await noteService.deleteNote(id);
+    print('delete response: ${response.responseData}');
   }
 
   @override
@@ -55,10 +61,25 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: addNote,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              deleteNote(2);
+            },
+            tooltip: 'Decrement',
+            child: const Icon(Icons.remove),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          FloatingActionButton(
+            onPressed: addNote,
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }
