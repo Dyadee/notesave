@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notesave/models/note.dart';
+import 'package:notesave/widgets/note_form.dart';
 
 class EditNoteScreen extends StatefulWidget {
   const EditNoteScreen({super.key});
@@ -13,15 +14,17 @@ class EditNoteScreen extends StatefulWidget {
 class _EditNoteScreenState extends State<EditNoteScreen> {
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Note;
-    print(args.id);
+    final note = ModalRoute.of(context)!.settings.arguments as Note;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: const Text('Edit Note'),
       ),
-      body: const Center(
-        child: Text('Edit Note'),
+      body: Center(
+        child: NoteForm(
+          note: note,
+        ),
       ),
     );
   }
