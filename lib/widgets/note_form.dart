@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notesave/models/note.dart';
-import 'package:notesave/service/notes_service.dart';
+import 'package:notesave/notes_bloc/notes_list_bloc.dart';
+import 'package:notesave/notes_bloc/notes_list_event.dart';
 
 class NoteForm extends StatefulWidget {
   final Note? note;
@@ -69,25 +71,22 @@ class NoteFormState extends State<NoteForm> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
-              onPressed: () async {
+              onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  final noteService = NotesService();
+                  Note note = Note(
+                      title: noteTitle.text, description: noteDescription.text);
                   if (widget.note != null) {
-                    Note newNote = Note(
-                        title: noteTitle.text,
-                        description: noteDescription.text,
-                        id: widget.note!.id!);
-                    await noteService.patchNote(newNote).then((apiresponse) =>
-                        Navigator.pushReplacementNamed(context, '/',
-                            arguments: apiresponse));
+                    Note noteToUpdate = note.copyWith(id: widget.note!.id!);
+                    context
+                        .read<NotesListBloc>()
+                        .add(NotesListUpdateEvent(noteToUpdate));
                   } else {
-                    Note note = Note(
-                        title: noteTitle.text,
-                        description: noteDescription.text);
-                    await noteService.postNote(note).then((apiresponse) =>
-                        Navigator.pushReplacementNamed(context, '/',
-                            arguments: apiresponse));
+                    context.read<NotesListBloc>().add(NotesListAddEvent(note));
                   }
+                  Navigator.pushReplacementNamed(
+                    context,
+                    '/',
+                  );
                 }
               },
               child: const Text('Save'),

@@ -14,13 +14,16 @@ class NoteWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 8.0),
         child: ListTile(
             onTap: () {
               Navigator.pushNamed(context, SingleNoteScreen.routeName,
                   arguments: note);
             },
-            leading: const Icon(Icons.note),
+            leading: const Icon(
+              Icons.description,
+              size: 40,
+            ),
             title: Text(note.title!,
                 style: const TextStyle(
                     fontWeight: FontWeight.normal,
