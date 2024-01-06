@@ -13,15 +13,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final int _counter = 0;
-
   List<Note> notes = [];
 
   void getAllNotes() async {
     final noteService = NotesService();
     final response = await noteService.getAllNotesList();
     if (response.data is List<Note>) {
-      notes = [...response.data];
+      setState(() {
+        notes = [...response.data];
+      });
     }
     print('get response: ${response.data}');
   }
@@ -45,12 +45,12 @@ class _HomePageState extends State<HomePage> {
         title: 'Updated Note', description: 'Updated Description', id: 3);
     final noteService = NotesService();
     final response = await noteService.patchNote(note);
-    print('update response: ${response.responseData}');
+    print('update response: ${response.data}');
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     getAllNotes();
   }
 
