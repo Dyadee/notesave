@@ -22,6 +22,7 @@ Note _$NoteFromJson(Map<String, dynamic> json) {
 mixin _$Note {
   String? get title => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
+  @IntStringConverter()
   int? get id => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -34,7 +35,8 @@ abstract class $NoteCopyWith<$Res> {
   factory $NoteCopyWith(Note value, $Res Function(Note) then) =
       _$NoteCopyWithImpl<$Res, Note>;
   @useResult
-  $Res call({String? title, String? description, int? id});
+  $Res call(
+      {String? title, String? description, @IntStringConverter() int? id});
 }
 
 /// @nodoc
@@ -78,7 +80,8 @@ abstract class _$$NoteImplCopyWith<$Res> implements $NoteCopyWith<$Res> {
       __$$NoteImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? title, String? description, int? id});
+  $Res call(
+      {String? title, String? description, @IntStringConverter() int? id});
 }
 
 /// @nodoc
@@ -115,7 +118,8 @@ class __$$NoteImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$NoteImpl implements _Note {
-  const _$NoteImpl({this.title, this.description, this.id});
+  const _$NoteImpl(
+      {this.title, this.description, @IntStringConverter() this.id});
 
   factory _$NoteImpl.fromJson(Map<String, dynamic> json) =>
       _$$NoteImplFromJson(json);
@@ -125,6 +129,7 @@ class _$NoteImpl implements _Note {
   @override
   final String? description;
   @override
+  @IntStringConverter()
   final int? id;
 
   @override
@@ -165,7 +170,7 @@ abstract class _Note implements Note {
   const factory _Note(
       {final String? title,
       final String? description,
-      final int? id}) = _$NoteImpl;
+      @IntStringConverter() final int? id}) = _$NoteImpl;
 
   factory _Note.fromJson(Map<String, dynamic> json) = _$NoteImpl.fromJson;
 
@@ -174,6 +179,7 @@ abstract class _Note implements Note {
   @override
   String? get description;
   @override
+  @IntStringConverter()
   int? get id;
   @override
   @JsonKey(ignore: true)
