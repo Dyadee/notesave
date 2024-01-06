@@ -10,9 +10,13 @@ class AddNoteScreen extends StatefulWidget {
 class _AddNoteScreenState extends State<AddNoteScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder(
-      child: Center(
-        child: Text('Add New Note'),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.amber,
+        title: const Text('Add New Note'),
+      ),
+      body: const Center(
+        child: Text('New Note'),
       ),
     );
   }

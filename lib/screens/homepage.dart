@@ -69,26 +69,10 @@ class _HomePageState extends State<HomePage> {
         children: [
           FloatingActionButton(
             onPressed: () {
-              deleteNote(2);
+              Navigator.pushNamed(context, '/add_note');
             },
-            tooltip: 'Delete Note',
-            child: const Icon(Icons.remove),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          FloatingActionButton(
-            onPressed: addNote,
             tooltip: 'Add Note',
             child: const Icon(Icons.add),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          FloatingActionButton(
-            onPressed: updateNote,
-            tooltip: 'Update Note',
-            child: const Icon(Icons.refresh),
           ),
         ],
       ),
