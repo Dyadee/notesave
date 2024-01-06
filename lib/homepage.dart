@@ -34,6 +34,14 @@ class _HomePageState extends State<HomePage> {
     print('delete response: ${response.responseData}');
   }
 
+  void updateNote() async {
+    Note note = const Note(
+        title: 'Updated Note', description: 'Updated Description', id: 3);
+    final noteService = NotesService();
+    final response = await noteService.patchNote(note);
+    print('update response: ${response.responseData}');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -68,7 +76,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               deleteNote(2);
             },
-            tooltip: 'Decrement',
+            tooltip: 'Delete Note',
             child: const Icon(Icons.remove),
           ),
           const SizedBox(
@@ -76,8 +84,16 @@ class _HomePageState extends State<HomePage> {
           ),
           FloatingActionButton(
             onPressed: addNote,
-            tooltip: 'Increment',
+            tooltip: 'Add Note',
             child: const Icon(Icons.add),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          FloatingActionButton(
+            onPressed: updateNote,
+            tooltip: 'Update Note',
+            child: const Icon(Icons.refresh),
           ),
         ],
       ),

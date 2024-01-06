@@ -86,4 +86,33 @@ class NotesService {
     }
     return apiResponse;
   }
+
+  Future<ApiResponse> patchNote(Note note) async {
+    var apiResponse = ApiResponse<dynamic>(null);
+    Uri url =
+        Uri.parse('${Constants.BaseURL}/${Constants.BaseEndpoint}/${note.id!}');
+
+    try {
+      var body = json.encode(note);
+      final response = await http.patch(url,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: body);
+      switch (response.statusCode) {
+        case 200:
+          apiResponse.responseData = Note.fromJson(json.decode(response.body));
+          break;
+        case 401:
+          apiResponse.responseData = json.decode(response.body);
+          break;
+        default:
+          apiResponse.responseData = json.decode(response.body);
+          break;
+      }
+    } on SocketException {
+      apiResponse.responseData = "Server error. Please retry";
+    }
+    return apiResponse;
+  }
 }
