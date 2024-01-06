@@ -57,5 +57,23 @@ class NotesListBloc extends Bloc<NotesListEvent, NotesListState> {
         emit.call(NotesListErrorState(e.toString()));
       }
     });
+
+    on<NotesListDeleteEvent>((event, emit) async {
+      try {
+        ApiResponse response = await _notesService.deleteNote(event.note.id!);
+        if (response.data is Note) {
+          ApiResponse response = await _notesService.getAllNotesList();
+          if (response.data is List<Note>) {
+            emit.call(NotesListDeleteState(response.data));
+          } else {
+            emit.call(NotesListErrorState(response.data.toString()));
+          }
+        } else {
+          emit.call(NotesListErrorState(response.data.toString()));
+        }
+      } catch (e) {
+        emit.call(NotesListErrorState(e.toString()));
+      }
+    });
   }
 }

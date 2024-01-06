@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notesave/models/note.dart';
-import 'package:notesave/service/notes_service.dart';
+import 'package:notesave/notes_bloc/notes_list_bloc.dart';
+import 'package:notesave/notes_bloc/notes_list_event.dart';
 
 class SingleNoteScreen extends StatelessWidget {
   const SingleNoteScreen({super.key});
@@ -8,14 +10,7 @@ class SingleNoteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void deleteNote(int id) async {
-      final noteService = NotesService();
-      await noteService.deleteNote(id).then((apiresponse) =>
-          Navigator.pushReplacementNamed(context, '/', arguments: apiresponse));
-    }
-
     final note = ModalRoute.of(context)!.settings.arguments as Note;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
@@ -49,7 +44,10 @@ class SingleNoteScreen extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 16.0),
               child: ElevatedButton.icon(
                   onPressed: () {
-                    deleteNote(note.id!);
+                    context
+                        .read<NotesListBloc>()
+                        .add(NotesListDeleteEvent(note));
+                    Navigator.pushReplacementNamed(context, '/');
                   },
                   icon: const Icon(
                     Icons.delete,
