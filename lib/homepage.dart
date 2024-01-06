@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notesave/models/note.dart';
 import 'package:notesave/service/notes_service.dart';
+import 'package:notesave/widgets/note_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -14,10 +15,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final int _counter = 0;
 
+  List<Note> notes = [];
+
   void getAllNotes() async {
     final noteService = NotesService();
     final response = await noteService.getAllNotesList();
-    print('get response: ${response.responseData}');
+    if (response.data is List<Note>) {
+      notes = [...response.data];
+    }
+    print('get response: ${response.data}');
   }
 
   void addNote() async {
@@ -25,13 +31,13 @@ class _HomePageState extends State<HomePage> {
         const Note(title: 'Second Note', description: 'Second Description');
     final noteService = NotesService();
     final response = await noteService.postNote(note);
-    print('post response: ${response.responseData}');
+    print('post response: ${response.data}');
   }
 
   void deleteNote(int id) async {
     final noteService = NotesService();
     final response = await noteService.deleteNote(id);
-    print('delete response: ${response.responseData}');
+    print('delete response: ${response.data}');
   }
 
   void updateNote() async {
@@ -55,19 +61,8 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+      body: ListView(
+        children: [...notes.map((note) => NoteWidget(note: note))],
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,

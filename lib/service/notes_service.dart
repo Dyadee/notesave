@@ -15,18 +15,18 @@ class NotesService {
           await http.get(url, headers: {"Content-Type": "application/json"});
       switch (response.statusCode) {
         case 200:
-          apiResponse.responseData = List<Note>.from(
+          apiResponse.data = List<Note>.from(
               json.decode(response.body).map((i) => Note.fromJson(i)));
           break;
         case 401:
-          apiResponse.responseData = json.decode(response.body);
+          apiResponse.data = json.decode(response.body);
           break;
         default:
-          apiResponse.responseData = json.decode(response.body);
+          apiResponse.data = json.decode(response.body);
           break;
       }
     } on SocketException {
-      apiResponse.responseData = "Server error. Please retry";
+      apiResponse.data = "Server error. Please retry";
     }
     return apiResponse;
   }
@@ -44,17 +44,17 @@ class NotesService {
           body: body);
       switch (response.statusCode) {
         case 200:
-          apiResponse.responseData = Note.fromJson(json.decode(response.body));
+          apiResponse.data = Note.fromJson(json.decode(response.body));
           break;
         case 401:
-          apiResponse.responseData = json.decode(response.body);
+          apiResponse.data = json.decode(response.body);
           break;
         default:
-          apiResponse.responseData = json.decode(response.body);
+          apiResponse.data = json.decode(response.body);
           break;
       }
     } on SocketException {
-      apiResponse.responseData = "Server error. Please retry";
+      apiResponse.data = "Server error. Please retry";
     }
     return apiResponse;
   }
@@ -72,17 +72,17 @@ class NotesService {
       );
       switch (response.statusCode) {
         case 200:
-          apiResponse.responseData = Note.fromJson(json.decode(response.body));
+          apiResponse.data = Note.fromJson(json.decode(response.body));
           break;
         case 401:
-          apiResponse.responseData = json.decode(response.body);
+          apiResponse.data = json.decode(response.body);
           break;
         default:
-          apiResponse.responseData = json.decode(response.body);
+          apiResponse.data = json.decode(response.body);
           break;
       }
     } on SocketException {
-      apiResponse.responseData = "Server error. Please retry";
+      apiResponse.data = "Server error. Please retry";
     }
     return apiResponse;
   }

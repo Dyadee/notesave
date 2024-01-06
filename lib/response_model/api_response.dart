@@ -1,4 +1,4 @@
 class ApiResponse<T> {
-  T? responseData;
-  ApiResponse(this.responseData);
+  T? data;
+  ApiResponse(this.data);
 }
