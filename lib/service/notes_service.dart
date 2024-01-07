@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:notesave/cache/shared_preferences_service.dart';
 import 'package:notesave/constants/constants.dart';
 import 'package:notesave/models/note.dart';
 import 'package:http/http.dart' as http;
@@ -11,12 +12,16 @@ class NotesService {
     var apiResponse = ApiResponse<dynamic>(null);
     Uri url = Uri.parse('${Constants.BaseURL}/${Constants.BaseEndpoint}');
     try {
+      SharedPreferencesService sharedPreferencesService =
+          SharedPreferencesService();
       final response =
           await http.get(url, headers: {"Content-Type": "application/json"});
       switch (response.statusCode) {
         case 200:
           apiResponse.data = List<Note>.from(
               json.decode(response.body).map((i) => Note.fromJson(i)));
+          sharedPreferencesService.saveDataWithExpiration(
+              response.body, const Duration(days: 7));
           break;
         case 401:
           apiResponse.data = json.decode(response.body);
@@ -45,6 +50,7 @@ class NotesService {
       switch (response.statusCode) {
         case 200:
           apiResponse.data = Note.fromJson(json.decode(response.body));
+          await getAllNotesList();
           break;
         case 401:
           apiResponse.data = json.decode(response.body);
@@ -73,6 +79,7 @@ class NotesService {
       switch (response.statusCode) {
         case 200:
           apiResponse.data = Note.fromJson(json.decode(response.body));
+          await getAllNotesList();
           break;
         case 401:
           apiResponse.data = json.decode(response.body);
@@ -102,6 +109,7 @@ class NotesService {
       switch (response.statusCode) {
         case 200:
           apiResponse.data = Note.fromJson(json.decode(response.body));
+          await getAllNotesList();
           break;
         case 401:
           apiResponse.data = json.decode(response.body);

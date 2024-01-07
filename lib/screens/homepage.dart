@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<Note> notes;
+  List<Note> notes = [];
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +35,7 @@ class _HomePageState extends State<HomePage> {
             state is NotesListDeleteState) {
           notes = state.notesList;
           return ListView(
-            children: [
-              ...state.notesList.map((note) => NoteWidget(note: note))
-            ],
+            children: [...notes.map((note) => NoteWidget(note: note))],
           );
         } else {
           return const Center(
