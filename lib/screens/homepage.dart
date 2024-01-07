@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notesave/models/note.dart';
 import 'package:notesave/notes_bloc/notes_list_bloc.dart';
 import 'package:notesave/notes_bloc/notes_list_event.dart';
 import 'package:notesave/notes_bloc/notes_list_state.dart';
@@ -17,8 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<Note> notes;
-
   @override
   Widget build(BuildContext context) {
     context.read<NotesListBloc>().add(NotesListGetAllEvent());
@@ -33,7 +30,6 @@ class _HomePageState extends State<HomePage> {
             state is NotesListAddState ||
             state is NotesListUpdateState ||
             state is NotesListDeleteState) {
-          notes = state.notesList;
           return ListView(
             children: [
               ...state.notesList.map((note) => NoteWidget(note: note))
