@@ -66,14 +66,18 @@ class NotesListBloc extends Bloc<NotesListEvent, NotesListState> {
       try {
         ApiResponse responseSingleNote =
             await _notesService.patchNote(event.note);
-        final noteUpdated = Note.fromJson(responseSingleNote.data);
+        Note noteUpdated = responseSingleNote.data;
+
         List<Note> notesList = [];
         final cachedData = await sharedPreferencesService.getDataIfNotExpired();
         if (cachedData != null) {
           notesList = List<Note>.from(
               json.decode(cachedData).map((i) => Note.fromJson(i)));
-          notesList.removeWhere((note) => note.id! == noteUpdated.id!);
-          notesList.add(noteUpdated);
+
+          notesList = notesList
+              .map((note) => note.id == noteUpdated.id! ? noteUpdated : note)
+              .toList();
+
           await sharedPreferencesService.saveDataWithExpiration(
               jsonEncode(notesList), const Duration(days: 7));
         } else {

@@ -90,7 +90,9 @@ class NoteFormState extends State<NoteForm> {
                   } else {
                     context.read<NotesListBloc>().add(NotesListAddEvent(note));
                   }
-                  Navigator.pushNamed(context, '/');
+                  noteTitle.text = '';
+                  noteDescription.text = '';
+                  Navigator.pushReplacementNamed(context, '/');
                 }
               },
               child: const Text('Save'),

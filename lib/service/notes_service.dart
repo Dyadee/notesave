@@ -79,9 +79,7 @@ class NotesService {
       );
       switch (response.statusCode) {
         case 200:
-          // apiResponse.data = response.body;
           final decoded = jsonDecode(response.body);
-          // final encoded = jsonEncode(response.body);
           apiResponse.data = Note.fromJson(decoded);
           break;
         case 401:
@@ -111,8 +109,7 @@ class NotesService {
           body: body);
       switch (response.statusCode) {
         case 200:
-          final encoded = jsonEncode(response.body);
-          final decoded = jsonDecode(encoded);
+          final decoded = jsonDecode(response.body);
           apiResponse.data = Note.fromJson(decoded);
           break;
         case 401:
