@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:notesave/cache/shared_preferences_service.dart';
 import 'package:notesave/constants/constants.dart';
 import 'package:notesave/models/note.dart';
@@ -49,8 +48,10 @@ class NotesService {
           body: body);
       switch (response.statusCode) {
         case 200:
-          apiResponse.data = Note.fromJson(json.decode(response.body));
-          await getAllNotesList();
+          final encoded = jsonEncode(response.body);
+          final decoded = jsonDecode(encoded);
+          apiResponse.data = Note.fromJson(decoded);
+
           break;
         case 401:
           apiResponse.data = json.decode(response.body);
@@ -78,8 +79,10 @@ class NotesService {
       );
       switch (response.statusCode) {
         case 200:
-          apiResponse.data = Note.fromJson(json.decode(response.body));
-          await getAllNotesList();
+          // apiResponse.data = response.body;
+          final decoded = jsonDecode(response.body);
+          // final encoded = jsonEncode(response.body);
+          apiResponse.data = Note.fromJson(decoded);
           break;
         case 401:
           apiResponse.data = json.decode(response.body);
@@ -108,8 +111,9 @@ class NotesService {
           body: body);
       switch (response.statusCode) {
         case 200:
-          apiResponse.data = Note.fromJson(json.decode(response.body));
-          await getAllNotesList();
+          final encoded = jsonEncode(response.body);
+          final decoded = jsonDecode(encoded);
+          apiResponse.data = Note.fromJson(decoded);
           break;
         case 401:
           apiResponse.data = json.decode(response.body);

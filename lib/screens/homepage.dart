@@ -38,12 +38,20 @@ class _HomePageState extends State<HomePage> {
               ...state.notesList.map((note) => NoteWidget(note: note))
             ],
           );
-        } else {
-          print(state.errorMessage);
+        } else if (state is NotesListErrorState) {
+          debugPrint(state.errorMessage);
+          return Center(child: Text(state.errorMessage));
+        } else if (state is NotesListLoadingState) {
           return const Center(
             child: CircularProgressIndicator(
               color: Colors.amber,
             ),
+          );
+        } else {
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.red.shade900,
           );
         }
       }),
