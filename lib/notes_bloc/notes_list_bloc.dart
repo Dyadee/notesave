@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notesave/cache/shared_preferences_service.dart';
 import 'package:notesave/models/note.dart';
@@ -16,20 +17,19 @@ class NotesListBloc extends Bloc<NotesListEvent, NotesListState> {
     on<NotesListGetAllEvent>((event, emit) async {
       emit.call(NotesListLoadingState());
       try {
-        ApiResponse response = await _notesService.getAllNotesList();
-        if (response.data is List<Note>) {
-          final cachedData =
-              await sharedPreferencesService.getDataIfNotExpired();
-          if (cachedData != null) {
-            final notesList = List<Note>.from(
-                json.decode(cachedData).map((i) => Note.fromJson(i)));
-            emit.call(NotesListLoadedState(notesList));
-          } else {
-            emit.call(NotesListLoadedState(response.data));
-          }
+        List<Note> notesList = [];
+        final cachedData = await sharedPreferencesService.getDataIfNotExpired();
+
+        if (cachedData != null) {
+          notesList = List<Note>.from(
+              json.decode(cachedData).map((i) => Note.fromJson(i)));
         } else {
-          emit.call(NotesListErrorState(response.data.toString()));
+          ApiResponse responseNotesList = await _notesService.getAllNotesList();
+          if (responseNotesList.data is List<Note>) {
+            notesList = responseNotesList.data;
+          }
         }
+        emit.call(NotesListLoadedState(notesList));
       } catch (e) {
         emit.call(NotesListErrorState(e.toString()));
       }
@@ -37,81 +37,85 @@ class NotesListBloc extends Bloc<NotesListEvent, NotesListState> {
 
     on<NotesListAddEvent>((event, emit) async {
       try {
-        ApiResponse response = await _notesService.postNote(event.note);
-        if (response.data is Note) {
-          ApiResponse response = await _notesService.getAllNotesList();
-          if (response.data is List<Note>) {
-            final cachedData =
-                await sharedPreferencesService.getDataIfNotExpired();
-            if (cachedData != null) {
-              final notesList = List<Note>.from(
-                  json.decode(cachedData).map((i) => Note.fromJson(i)));
-              emit.call(NotesListAddState(notesList));
-            } else {
-              emit.call(NotesListAddState(response.data));
-            }
-          } else {
-            emit.call(NotesListErrorState(response.data.toString()));
-          }
+        ApiResponse responseSingleNote =
+            await _notesService.postNote(event.note);
+        final noteAdded = Note.fromJson(responseSingleNote.data);
+        List<Note> notesList = [];
+        final cachedData = await sharedPreferencesService.getDataIfNotExpired();
+        if (cachedData != null) {
+          notesList = List<Note>.from(
+              json.decode(cachedData).map((i) => Note.fromJson(i)));
+          notesList.removeWhere((note) => note.id! == noteAdded.id!);
+          notesList.add(noteAdded);
+          await sharedPreferencesService.saveDataWithExpiration(
+              jsonEncode(notesList), const Duration(days: 7));
         } else {
-          emit.call(NotesListErrorState(response.data.toString()));
+          ApiResponse responseNotesList = await _notesService.getAllNotesList();
+          if (responseNotesList.data is List<Note>) {
+            notesList = responseNotesList.data;
+          }
         }
+        emit.call(NotesListAddState(notesList));
       } catch (e) {
-        emit.call(NotesListErrorState(e.toString()));
+        emit.call(
+            NotesListErrorState("notesList Add Event Catch: ${e.toString()}"));
       }
     });
 
     on<NotesListUpdateEvent>((event, emit) async {
       try {
-        ApiResponse response = await _notesService.patchNote(event.note);
-        if (response.data is Note) {
-          ApiResponse response = await _notesService.getAllNotesList();
-
-          if (response.data is List<Note>) {
-            final cachedData =
-                await sharedPreferencesService.getDataIfNotExpired();
-            if (cachedData != null) {
-              final notesList = List<Note>.from(
-                  json.decode(cachedData).map((i) => Note.fromJson(i)));
-              emit.call(NotesListUpdateState(notesList));
-            } else {
-              emit.call(NotesListUpdateState(response.data));
-            }
-          } else {
-            emit.call(NotesListErrorState(response.data.toString()));
-          }
+        ApiResponse responseSingleNote =
+            await _notesService.patchNote(event.note);
+        final noteUpdated = Note.fromJson(responseSingleNote.data);
+        List<Note> notesList = [];
+        final cachedData = await sharedPreferencesService.getDataIfNotExpired();
+        if (cachedData != null) {
+          notesList = List<Note>.from(
+              json.decode(cachedData).map((i) => Note.fromJson(i)));
+          notesList.removeWhere((note) => note.id! == noteUpdated.id!);
+          notesList.add(noteUpdated);
+          await sharedPreferencesService.saveDataWithExpiration(
+              jsonEncode(notesList), const Duration(days: 7));
         } else {
-          emit.call(NotesListErrorState(response.data.toString()));
+          ApiResponse responseNotesList = await _notesService.getAllNotesList();
+          if (responseNotesList.data is List<Note>) {
+            notesList = responseNotesList.data;
+          }
         }
+        emit.call(NotesListUpdateState(notesList));
       } catch (e) {
-        emit.call(NotesListErrorState(e.toString()));
+        emit.call(NotesListErrorState(
+            "notesList Update Event Catch: ${e.toString()}"));
       }
     });
 
     on<NotesListDeleteEvent>((event, emit) async {
       try {
-        ApiResponse response = await _notesService.deleteNote(event.note.id!);
-        if (response.data is Note) {
-          ApiResponse response = await _notesService.getAllNotesList();
+        ApiResponse responseSingleNote =
+            await _notesService.deleteNote(event.note.id!);
 
-          if (response.data is List<Note>) {
-            final cachedData =
-                await sharedPreferencesService.getDataIfNotExpired();
-            if (cachedData != null) {
-              final notesList = List<Note>.from(
-                  json.decode(cachedData).map((i) => Note.fromJson(i)));
-              emit.call(NotesListDeleteState(notesList));
-            } else {
-              emit.call(NotesListDeleteState(response.data));
-            }
-          } else {
-            emit.call(NotesListErrorState(response.data.toString()));
-          }
+        debugPrint('responseSingleNote.data: ${responseSingleNote.data}');
+
+        Note noteDeleted = responseSingleNote.data;
+
+        List<Note> notesList = [];
+        final cachedData = await sharedPreferencesService.getDataIfNotExpired();
+        if (cachedData != null) {
+          notesList = List<Note>.from(
+              json.decode(cachedData).map((i) => Note.fromJson(i)));
+          notesList.removeWhere((note) => note.id! == noteDeleted.id!);
+          await sharedPreferencesService.saveDataWithExpiration(
+              jsonEncode(notesList), const Duration(days: 7));
         } else {
-          emit.call(NotesListErrorState(response.data.toString()));
+          ApiResponse responseNotesList = await _notesService.getAllNotesList();
+          if (responseNotesList.data is List<Note>) {
+            notesList = responseNotesList.data;
+          }
         }
+        emit.call(NotesListDeleteState(notesList));
       } catch (e) {
-        emit.call(NotesListErrorState(e.toString()));
+        emit.call(NotesListErrorState(
+            "notesList Delete Event Catch: ${e.toString()}"));
       }
     });
   }
