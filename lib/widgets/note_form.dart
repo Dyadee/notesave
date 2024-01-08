@@ -29,6 +29,13 @@ class NoteFormState extends State<NoteForm> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    noteTitle.dispose();
+    noteDescription.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
@@ -83,10 +90,7 @@ class NoteFormState extends State<NoteForm> {
                   } else {
                     context.read<NotesListBloc>().add(NotesListAddEvent(note));
                   }
-                  Navigator.pushReplacementNamed(
-                    context,
-                    '/',
-                  );
+                  Navigator.pushNamed(context, '/');
                 }
               },
               child: const Text('Save'),

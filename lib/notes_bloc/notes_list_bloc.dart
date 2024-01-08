@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notesave/cache/shared_preferences_service.dart';
 import 'package:notesave/models/note.dart';
@@ -39,19 +40,15 @@ class NotesListBloc extends Bloc<NotesListEvent, NotesListState> {
       try {
         ApiResponse response = await _notesService.postNote(event.note);
         if (response.data is Note) {
-          ApiResponse response = await _notesService.getAllNotesList();
-          if (response.data is List<Note>) {
-            final cachedData =
-                await sharedPreferencesService.getDataIfNotExpired();
-            if (cachedData != null) {
-              final notesList = List<Note>.from(
-                  json.decode(cachedData).map((i) => Note.fromJson(i)));
-              emit.call(NotesListAddState(notesList));
-            } else {
-              emit.call(NotesListAddState(response.data));
-            }
+          final cachedData =
+              await sharedPreferencesService.getDataIfNotExpired();
+          if (cachedData != null) {
+            final notesList = List<Note>.from(
+                json.decode(cachedData).map((i) => Note.fromJson(i)));
+            debugPrint('notesList Add Event: $notesList');
+            emit.call(NotesListAddState(notesList));
           } else {
-            emit.call(NotesListErrorState(response.data.toString()));
+            emit.call(NotesListAddState(response.data));
           }
         } else {
           emit.call(NotesListErrorState(response.data.toString()));
